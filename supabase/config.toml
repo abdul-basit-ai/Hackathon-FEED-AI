@@ -1,0 +1,5 @@
+project_id = "feedintel"
+
+[functions.feedintel]
+# The handler verifies callers with Supabase Auth and an account allowlist.
+verify_jwt = false
