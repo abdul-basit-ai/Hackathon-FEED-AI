@@ -1,22 +1,23 @@
 import type { FeedIntelApi } from "@/types/analysis";
 import { getAccessToken } from "./auth";
+import { FEEDINTEL_API_URL, isPublicAccess } from "./access";
 import { FeedIntelError, toAnalysisResult, toBackendInput, toCapabilities, toHistory } from "./backendContract";
 
-export const FEEDINTEL_API_URL = ((import.meta.env["VITE_FEEDINTEL_API_URL"] as string | undefined) ?? "https://neubatybcqqhrcqqssqp.supabase.co/functions/v1/feedintel").replace(/\/$/, "");
+export { FEEDINTEL_API_URL };
 
-export function createHttpFeedintelApi({ baseUrl, getToken, fetcher = fetch }: {
-  baseUrl: string; getToken: () => Promise<string | null>; fetcher?: typeof fetch;
+export function createHttpFeedintelApi({ baseUrl, getToken, fetcher = fetch, allowAnonymous = async () => false }: {
+  baseUrl: string; getToken: () => Promise<string | null>; fetcher?: typeof fetch; allowAnonymous?: () => Promise<boolean>;
 }): FeedIntelApi {
   async function request(path: string, init?: RequestInit): Promise<unknown> {
     if (!baseUrl) throw new FeedIntelError("NOT_CONFIGURED", "The analysis service has not been configured.");
     const token = await getToken();
-    if (!token) throw new FeedIntelError("UNAUTHORIZED", "Please sign in to analyze videos and open saved reports.", 401);
+    if (!token && !(await allowAnonymous())) throw new FeedIntelError("UNAUTHORIZED", "Please sign in to analyze videos and open saved reports.", 401);
     let response: Response;
     try {
       response = await fetcher(`${baseUrl.replace(/\/$/, "")}${path}`, {
-        ...init, headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(150000),
+        ...init, headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) }, signal: AbortSignal.timeout(150000),
       });
-    } catch { throw new FeedIntelError("NETWORK_ERROR", "Unable to reach FeedIntel. Check your connection and try again."); }
+    } catch { throw new FeedIntelError("NETWORK_ERROR", "Unable to reach Signal Spy. Check your connection and try again."); }
     let data: unknown;
     try { data = await response.json(); }
     catch { throw new FeedIntelError("INVALID_RESPONSE", "The service returned an unreadable response.", response.status); }
@@ -35,4 +36,4 @@ export function createHttpFeedintelApi({ baseUrl, getToken, fetcher = fetch }: {
   };
 }
 
-export const httpFeedintelApi = createHttpFeedintelApi({ baseUrl: FEEDINTEL_API_URL, getToken: getAccessToken });
+export const httpFeedintelApi = createHttpFeedintelApi({ baseUrl: FEEDINTEL_API_URL, getToken: getAccessToken, allowAnonymous: isPublicAccess });

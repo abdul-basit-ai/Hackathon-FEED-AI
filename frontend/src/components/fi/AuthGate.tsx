@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getAuthClient } from "@/services/auth";
+import { isPublicAccess } from "@/services/access";
 import { isDemoMode } from "@/services/feedintelApi";
 
 export function AuthGate({ children }: { children: ReactNode }) {
@@ -15,7 +16,14 @@ export function AuthGate({ children }: { children: ReactNode }) {
   const [configured, setConfigured] = useState(true);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [publicAccess, setPublicAccess] = useState<boolean | null>(isDemoMode ? false : null);
   const previousUser = useRef<string | undefined>(undefined);
+  useEffect(() => {
+    if (isDemoMode) return;
+    let active = true;
+    void isPublicAccess().then((open) => { if (active) setPublicAccess(open); });
+    return () => { active = false; };
+  }, []);
   useEffect(() => {
     if (isDemoMode) return;
     let active = true;
@@ -61,7 +69,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
   }
 
   if (isDemoMode) return children;
-  if (loading) return <div className="grid min-h-screen place-items-center bg-background" role="status"><span className="flex items-center gap-2"><Loader2 className="h-4 w-4 animate-spin" /> Restoring your session…</span></div>;
+  if (loading || publicAccess === null) return <div className="grid min-h-screen place-items-center bg-background" role="status"><span className="flex items-center gap-2"><Loader2 className="h-4 w-4 animate-spin" /> Restoring your session…</span></div>;
   if (session) return <>
     <div className="no-print flex items-center justify-end gap-3 border-b bg-card px-4 py-2 text-xs">
       <span className="truncate text-muted-foreground">{session.user.email}</span>
@@ -70,6 +78,8 @@ export function AuthGate({ children }: { children: ReactNode }) {
     </div>
     {children}
   </>;
+  // Public mode: visitors use the app directly; the backend applies a shared site-wide limit.
+  if (publicAccess) return children;
   return <div className="grid min-h-screen place-items-center bg-background px-4 py-12">
     <div className="w-full max-w-md rounded-2xl border bg-card p-8 shadow-card">
       <div className="mb-6 flex items-center gap-3"><div className="rounded-lg bg-primary p-2 text-primary-foreground"><BarChart3 /></div><span className="font-display text-xl font-bold">Signal Spy</span></div>

@@ -324,3 +324,30 @@ test('unconfigured selected provider fails before retrieval and never falls back
   const response = await app(post({ ...input, intelligence_provider: 'claude' }));
   assert.equal(response.status, 503); assert.equal(searches, 0);
 });
+
+test('public access runs sessionless requests as the shared owner and keeps tokens verified', async () => {
+  const publicOwner = crypto.randomUUID();
+  const publicEnv = (name) => ({ ...{ FEEDINTEL_MODE: 'demo', DEMO_ACCESS_TOKEN: token }, PUBLIC_ACCESS_OWNER_ID: publicOwner })[name];
+  const owners = [];
+  const store = new MemoryStore();
+  const consume = store.consumeQuota.bind(store);
+  store.consumeQuota = async (owner) => { owners.push(owner); return consume(owner); };
+  const app = createApp({ env: publicEnv, store });
+  assert.equal((await (await app(new Request('http://localhost/health'))).json()).access, 'public');
+  const anonymous = (path, init = {}) => app(new Request(`http://localhost${path}`, init));
+  const created = await anonymous('/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ skill: 'trend_detector', query: 'running shoes' }) });
+  assert.equal(created.status, 200);
+  assert.deepEqual(owners, [publicOwner]);
+  const { analysis_id: id } = await created.json();
+  assert.equal((await anonymous(`/analyses/${id}`)).status, 200);
+  assert.equal((await anonymous('/analyses')).status, 200);
+  const wrongToken = await anonymous('/analyses', { headers: { Authorization: 'Bearer not-the-demo-token' } });
+  assert.equal(wrongToken.status, 401);
+});
+
+test('public access is off by default and rejects a malformed owner', async () => {
+  assert.equal((await (await createApp({ env })(new Request('http://localhost/health'))).json()).access, 'account');
+  assert.equal((await createApp({ env })(new Request('http://localhost/analyses'))).status, 401);
+  const bad = createApp({ env: (name) => ({ FEEDINTEL_MODE: 'demo', DEMO_ACCESS_TOKEN: token, PUBLIC_ACCESS_OWNER_ID: 'not-a-uuid' })[name] });
+  assert.equal((await bad(new Request('http://localhost/analyses'))).status, 503);
+});

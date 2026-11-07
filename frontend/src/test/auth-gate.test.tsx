@@ -2,8 +2,9 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-libra
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-const mocks = vi.hoisted(() => ({ getAuthClient: vi.fn() }));
+const mocks = vi.hoisted(() => ({ getAuthClient: vi.fn(), isPublicAccess: vi.fn(async () => false) }));
 vi.mock("@/services/auth", () => ({ getAuthClient: mocks.getAuthClient }));
+vi.mock("@/services/access", () => ({ isPublicAccess: mocks.isPublicAccess }));
 vi.mock("@/services/feedintelApi", () => ({ isDemoMode: false }));
 import { AuthGate } from "@/components/fi/AuthGate";
 
@@ -34,6 +35,18 @@ describe("Restricted demo sign-in", () => {
     await screen.findByLabelText("Email");
     expect(qc.getQueryData(["analyses"])).toBeUndefined();
     expect(screen.queryByText("Private workspace")).not.toBeInTheDocument();
+  });
+
+  it("opens the workspace without sign-in when the backend enables public access", async () => {
+    mocks.isPublicAccess.mockResolvedValueOnce(true);
+    const auth = {
+      getSession: vi.fn(async () => ({ data: { session: null }, error: null })),
+      onAuthStateChange: vi.fn(() => ({ data: { subscription: { unsubscribe: vi.fn() } } })),
+    };
+    mocks.getAuthClient.mockReturnValue({ auth });
+    render(<QueryClientProvider client={new QueryClient()}><AuthGate><div>Private workspace</div></AuthGate></QueryClientProvider>);
+    await screen.findByText("Private workspace");
+    expect(screen.queryByLabelText("Email")).not.toBeInTheDocument();
   });
 
   it("explains missing public configuration instead of rendering private routes", async () => {

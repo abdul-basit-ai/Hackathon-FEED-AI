@@ -80,6 +80,7 @@ This command loads the ignored environment file, calls your running server, and 
 | `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL` | Direct Claude credential and a structured-output model available to your account |
 | `LOVABLE_ANALYSIS_URL`, `LOVABLE_BRIDGE_TOKEN` | Your deployed Lovable AI bridge URL and a private shared service token |
 | `ALLOWED_ORIGINS` | Comma-separated exact frontend origins, no wildcard or trailing slash |
+| `PUBLIC_ACCESS_OWNER_ID` | Optional. A real Supabase user UUID. When set, visitors can analyze **without signing in**; their requests run as this account, share its history, and share its quota of five analyses per minute site-wide. Every analysis spends the server's Oriane and AI credits, so set provider spend limits. Unset to require sign-in again |
 
 The key itself remains only in the ignored local environment file. A live one-video connector check successfully normalized a source record and calculated KPIs. Original-link availability, OpenAI analysis, and Supabase persistence still require separate verification.
 

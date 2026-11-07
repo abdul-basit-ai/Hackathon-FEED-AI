@@ -42,6 +42,9 @@ export function createApp({ env, connector, analyzer, store, authenticate, fetch
     if (token !== expected) throw new AppError(401, 'UNAUTHORIZED', 'Invalid local demo token.');
     return 'local-demo';
   };
+  // Optional public access: requests without a session run as this one real account,
+  // so its history is shared and its per-minute quota becomes a site-wide limit.
+  const publicOwner = (env('PUBLIC_ACCESS_OWNER_ID') || '').trim();
   let running = 0;
 
   return async function handle(request) {
@@ -59,13 +62,14 @@ export function createApp({ env, connector, analyzer, store, authenticate, fetch
       }
       if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers });
       const path = new URL(request.url).pathname.replace(/^\/functions\/v1\/feedintel(?=\/|$)/, '').replace(/^\/feedintel(?=\/|$)/, '') || '/';
-      if (path === '/health' && request.method === 'GET') return json(200, { status: 'ok', service: 'FeedIntel backend', mode });
+      if (path === '/health' && request.method === 'GET') return json(200, { status: 'ok', service: 'FeedIntel backend', mode, access: publicOwner ? 'public' : 'account' });
       if (!(path === '/analyze' || path === '/analyses' || path === '/intelligence-options' || /^\/analyses\/[^/]+$/.test(path))) throw new AppError(404, 'NOT_FOUND', 'Route not found.');
       const method = path === '/analyze' ? 'POST' : 'GET';
       if (request.method !== method) { headers.Allow = method; throw new AppError(405, 'METHOD_NOT_ALLOWED', `Use ${method} for this route.`); }
       const token = request.headers.get('authorization')?.match(/^Bearer (\S+)$/i)?.[1];
-      if (!token) throw new AppError(401, 'UNAUTHORIZED', 'A Bearer access token is required.');
-      const owner = await authenticate(token);
+      if (!token && !publicOwner) throw new AppError(401, 'UNAUTHORIZED', 'A Bearer access token is required.');
+      if (!token && !uuid.test(publicOwner)) throw new AppError(503, 'NOT_CONFIGURED', 'PUBLIC_ACCESS_OWNER_ID must be a user UUID.');
+      const owner = token ? await authenticate(token) : publicOwner;
       if (path === '/intelligence-options') return json(200, { ...intelligenceOptions(env), mode });
       if (path === '/analyses') {
         const params = new URL(request.url).searchParams;

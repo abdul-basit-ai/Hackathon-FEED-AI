@@ -50,6 +50,13 @@ describe("Frontend against the actual backend handler", () => {
     expect(fetcher).not.toHaveBeenCalled();
   });
 
+  it("calls without credentials only when the backend allows public access", async () => {
+    const fetcher = vi.fn(async (_url: RequestInfo | URL, _options?: RequestInit) => new Response(JSON.stringify({ analyses: [], limit: 100, offset: 0 }), { status: 200 }));
+    const api = createHttpFeedintelApi({ baseUrl: "https://backend.example", getToken: async () => null, fetcher, allowAnonymous: async () => true });
+    await expect(api.listAnalyses()).resolves.toEqual([]);
+    expect(new Headers(fetcher.mock.calls[0]?.[1]?.headers).has("Authorization")).toBe(false);
+  });
+
   it("preserves actionable backend errors without returning demo data", async () => {
     const api = createHttpFeedintelApi({ baseUrl: "https://backend.example", getToken: async () => token,
       fetcher: vi.fn(async () => new Response(JSON.stringify({ error: { code: "OPENAI_CREDITS_EXHAUSTED", message: "The OpenAI project has no available credits." } }), { status: 503 })) });
