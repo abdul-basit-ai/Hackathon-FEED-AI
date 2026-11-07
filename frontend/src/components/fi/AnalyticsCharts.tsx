@@ -3,7 +3,7 @@ import type { Charts } from "@/types/analysis";
 import { formatNumber, formatWeek } from "@/lib/format";
 import type { ReactNode } from "react";
 
-function ChartCard({ title, subtitle, children }: { title: string; subtitle?: string; children: ReactNode }) {
+export function ChartCard({ title, subtitle, children }: { title: string; subtitle?: string; children: ReactNode }) {
   return (
     <div className="rounded-xl border bg-card p-5 shadow-card">
       <h3 className="text-sm font-semibold">{title}</h3>
@@ -13,7 +13,7 @@ function ChartCard({ title, subtitle, children }: { title: string; subtitle?: st
   );
 }
 
-const axis = { fontSize: 11, fill: "var(--muted-foreground)" };
+export const axis = { fontSize: 11, fill: "var(--muted-foreground)" };
 const tip = { contentStyle: { borderRadius: 8, border: "1px solid var(--border)", fontSize: 12 } };
 
 export function PostsByWeekChart({ data }: { data: Charts["posts_by_week"] }) {

@@ -15,7 +15,7 @@ const backendResult = z.object({
     views_by_brand: z.array(z.object({ label: z.string(), views: metric })).optional() }),
   insights: z.array(z.object({ id: z.string(), title: z.string(), explanation: z.string(), evidence_video_ids: z.array(z.string()) })),
   videos: z.array(z.object({ id: z.string(), url: z.string().url().refine((url) => /^https?:\/\//.test(url)), creator: z.string().nullable(), platform: z.string(),
-    published_at: z.string(), views: metric, likes: metric, comments: metric, description: z.string().optional(), brands: z.array(z.string()).optional() })),
+    published_at: z.string(), views: metric, likes: metric, comments: metric, shares: metric.optional(), description: z.string().optional(), brands: z.array(z.string()).optional() })),
   report: z.object({ title: z.string(), executive_summary: z.string(), recommendations: z.array(z.string()),
     intelligence: z.object({ provider: z.enum(["openai", "claude", "lovable", "demo"]) }).optional(), context: context.optional() }),
   limitations: z.array(z.string()), generated_at: z.string(),

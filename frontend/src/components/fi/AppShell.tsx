@@ -49,7 +49,7 @@ function Brand() {
         <BarChart3 className="h-5 w-5" />
       </div>
       <div>
-        <div className="font-display text-base font-bold text-sidebar-accent-foreground">FeedIntel</div>
+        <div className="font-display text-base font-bold text-sidebar-accent-foreground">Signal Spy</div>
         <div className="text-[11px] text-sidebar-foreground/60">Video intelligence for decisions</div>
       </div>
     </div>
@@ -66,7 +66,7 @@ function SidebarBody({ onNavigate }: { onNavigate?: (() => void) | undefined }) 
           <span className={cn("h-2 w-2 rounded-full", isDemoMode ? "bg-warning" : "bg-success")} />
           {isDemoMode ? "Fictional demo" : "Live workspace"}
         </div>
-        {isDemoMode ? "Showing fictional demo data." : "Analysis and history use the FeedIntel service."}
+        {isDemoMode ? "Showing fictional demo data." : "Analysis and history use the Signal Spy service."}
       </div>
     </div>
   );
@@ -94,7 +94,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           >
             <Menu className="h-5 w-5" />
           </button>
-          <span className="font-display font-bold lg:hidden">FeedIntel</span>
+          <span className="font-display font-bold lg:hidden">Signal Spy</span>
           <div className="ml-auto">{isDemoMode && <DemoBadge />}</div>
         </header>
         <main className="flex-1 px-4 py-6 lg:px-8 lg:py-8">{children}</main>

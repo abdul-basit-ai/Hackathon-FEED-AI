@@ -72,7 +72,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
   </>;
   return <div className="grid min-h-screen place-items-center bg-background px-4 py-12">
     <div className="w-full max-w-md rounded-2xl border bg-card p-8 shadow-card">
-      <div className="mb-6 flex items-center gap-3"><div className="rounded-lg bg-primary p-2 text-primary-foreground"><BarChart3 /></div><span className="font-display text-xl font-bold">FeedIntel</span></div>
+      <div className="mb-6 flex items-center gap-3"><div className="rounded-lg bg-primary p-2 text-primary-foreground"><BarChart3 /></div><span className="font-display text-xl font-bold">Signal Spy</span></div>
       <h1 className="text-2xl font-semibold">Sign in to your workspace</h1>
       <p className="mt-2 text-sm text-muted-foreground">Use the approved demo account to analyze videos and reopen saved reports.</p>
       {!configured ? <p role="alert" className="mt-6 rounded-lg border border-warning/40 bg-demo p-4 text-sm">Sign-in is not configured for this app. Ask the workspace owner to complete setup.</p> :

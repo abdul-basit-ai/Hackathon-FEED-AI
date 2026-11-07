@@ -81,9 +81,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "FeedIntel — Social video intelligence" },
+      { title: "Signal Spy — Social video intelligence" },
       { name: "description", content: "Turn social video search results into competitor intelligence, trend analysis and evidence-backed reports." },
-      { property: "og:title", content: "FeedIntel — Social video intelligence" },
+      { property: "og:title", content: "Signal Spy — Social video intelligence" },
       { property: "og:description", content: "Competitor and trend intelligence from social video, with evidence and PDF reports." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

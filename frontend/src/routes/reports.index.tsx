@@ -9,7 +9,7 @@ import { SKILL_LABEL } from "@/types/analysis";
 import { EmptyState, ErrorState } from "@/components/fi/States";
 
 export const Route = createFileRoute("/reports/")({
-  head: () => ({ meta: [ { title: "Reports — FeedIntel" }, { name: "description", content: "Printable, evidence-backed reports for every completed analysis." }, { property: "og:title", content: "Reports — FeedIntel" }, { property: "og:description", content: "Printable, evidence-backed reports for every completed analysis." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" } ] }),
+  head: () => ({ meta: [ { title: "Reports — Signal Spy" }, { name: "description", content: "Printable, evidence-backed reports for every completed analysis." }, { property: "og:title", content: "Reports — Signal Spy" }, { property: "og:description", content: "Printable, evidence-backed reports for every completed analysis." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" } ] }),
   component: ReportsIndex,
 });
 

@@ -10,7 +10,7 @@ import { EmptyState, ErrorState } from "@/components/fi/States";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/")({
-  head: () => ({ meta: [ { title: "FeedIntel — Overview" }, { name: "description", content: "Your recent social video analyses and quick access to Competitor Spy and Trend Detector." }, { property: "og:title", content: "FeedIntel — Overview" }, { property: "og:description", content: "Your recent social video analyses and quick access to Competitor Spy and Trend Detector." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" } ] }),
+  head: () => ({ meta: [ { title: "Signal Spy — Overview" }, { name: "description", content: "Your recent social video analyses and quick access to Competitor Spy and Trend Detector." }, { property: "og:title", content: "Signal Spy — Overview" }, { property: "og:description", content: "Your recent social video analyses and quick access to Competitor Spy and Trend Detector." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" } ] }),
   component: Overview,
 });
 
@@ -26,7 +26,7 @@ function Overview() {
   return (
     <div className="mx-auto max-w-6xl space-y-10">
       <section className="bg-hero overflow-hidden rounded-2xl p-8 text-primary-foreground md:p-12">
-        <div className="text-xs font-semibold uppercase tracking-widest opacity-75">FeedIntel</div>
+        <div className="text-xs font-semibold uppercase tracking-widest opacity-75">Signal Spy</div>
         <h1 className="mt-2 max-w-2xl text-3xl font-bold md:text-5xl">Video intelligence for decisions</h1>
         <p className="mt-3 max-w-xl text-sm opacity-80 md:text-base">
           Compare competitors and detect trends across social video — with evidence you can click through.

@@ -47,7 +47,10 @@ export interface VideoEvidence {
   views: number | null;
   likes: number | null;
   comments: number | null;
+  shares?: number | null | undefined;
   brand?: string | null;
+  /** Matched search terms; a video can match both competitors. */
+  brands?: string[] | undefined;
   caption?: string | null;
 }
 

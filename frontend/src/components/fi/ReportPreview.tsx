@@ -1,7 +1,8 @@
 import type { AnalysisResult } from "@/types/analysis";
 import { PROVIDER_LABEL, SKILL_LABEL } from "@/types/analysis";
 import { formatDate, formatNumber } from "@/lib/format";
-import { PostsByWeekChart, ThemeChart, ViewsByBrandChart } from "./AnalyticsCharts";
+import { ThemeChart, ViewsByBrandChart } from "./AnalyticsCharts";
+import { MetricCharts } from "./MetricExplorer";
 
 /** A4-style report rendered from the same AnalysisResult as the dashboard. */
 export function ReportPreview({ a }: { a: AnalysisResult }) {
@@ -41,8 +42,11 @@ export function ReportPreview({ a }: { a: AnalysisResult }) {
       </section>
       <section className="grid gap-4 print:block">
         {a.charts.views_by_brand?.length ? <ViewsByBrandChart data={a.charts.views_by_brand} /> : null}
-        <PostsByWeekChart data={a.charts.posts_by_week} />
         <ThemeChart data={a.charts.theme_distribution} />
+      </section>
+      <section>
+        <h2 className="mb-2 text-lg font-semibold">Metrics by publication date</h2>
+        <MetricCharts a={a} days={a.period_days} />
       </section>
       <section>
         <h2 className="text-lg font-semibold">Findings</h2>

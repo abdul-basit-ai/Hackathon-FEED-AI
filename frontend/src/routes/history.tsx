@@ -13,7 +13,7 @@ import { PROVIDER_LABEL, SKILL_LABEL, type Skill } from "@/types/analysis";
 import { formatDate } from "@/lib/format";
 
 export const Route = createFileRoute("/history")({
-  head: () => ({ meta: [ { title: "Analysis History — FeedIntel" }, { name: "description", content: "Search, filter and reopen past FeedIntel analyses." }, { property: "og:title", content: "Analysis History — FeedIntel" }, { property: "og:description", content: "Search, filter and reopen past FeedIntel analyses." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" } ] }),
+  head: () => ({ meta: [ { title: "Analysis History — Signal Spy" }, { name: "description", content: "Search, filter and reopen past Signal Spy analyses." }, { property: "og:title", content: "Analysis History — Signal Spy" }, { property: "og:description", content: "Search, filter and reopen past Signal Spy analyses." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" } ] }),
   component: HistoryPage,
 });
 

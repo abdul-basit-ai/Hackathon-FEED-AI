@@ -75,7 +75,7 @@ export function SkillForm({ skill, busy, onSubmit }: { skill: Skill; busy: boole
       {caps.data && !caps.data.providers.some((p) => p.enabled) && <p role="alert" className="mt-3 text-sm text-destructive">No intelligence provider is configured. Ask the workspace owner to connect one.</p>}
       <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
         <p className="text-xs text-muted-foreground">
-          {isDemoMode || caps.data?.mode === "demo" ? "Demo mode: results are fictional sample data." : "Runs against the FeedIntel backend."}
+          {isDemoMode || caps.data?.mode === "demo" ? "Demo mode: results are fictional sample data." : "Runs against the Signal Spy backend."}
         </p>
         <div className="flex items-center gap-3">
           {error && <span className="text-sm text-destructive">{error}</span>}

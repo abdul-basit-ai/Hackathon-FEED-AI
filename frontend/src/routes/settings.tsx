@@ -14,7 +14,7 @@ import { PROVIDER_LABEL, type AiProvider, type ProviderCapability } from "@/type
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/settings")({
-  head: () => ({ meta: [ { title: "Settings & AI Integrations — FeedIntel" }, { name: "description", content: "Choose the AI analysis provider and learn how Lovable connectors and MCP differ." }, { property: "og:title", content: "Settings & AI Integrations — FeedIntel" }, { property: "og:description", content: "Choose the AI analysis provider and learn how Lovable connectors and MCP differ." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" } ] }),
+  head: () => ({ meta: [ { title: "Settings & AI Integrations — Signal Spy" }, { name: "description", content: "Choose the AI analysis provider and learn how Lovable connectors and MCP differ." }, { property: "og:title", content: "Settings & AI Integrations — Signal Spy" }, { property: "og:description", content: "Choose the AI analysis provider and learn how Lovable connectors and MCP differ." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" } ] }),
   component: SettingsPage,
 });
 
@@ -51,7 +51,7 @@ function SettingsPage() {
 
       <section>
         <h2 className="text-lg font-semibold">AI analysis provider</h2>
-        <p className="mb-4 text-sm text-muted-foreground">The model the running FeedIntel app uses to analyze videos.</p>
+        <p className="mb-4 text-sm text-muted-foreground">The model the running Signal Spy app uses to analyze videos.</p>
         {caps.isPending ? <Skeleton className="h-48 rounded-xl" /> : caps.isError ? <ErrorState message={caps.error.message} onRetry={() => caps.refetch()} /> : (
           <RadioGroup value={selected} onValueChange={(v) => setSelected(v as AiProvider)} className="gap-3">
             {(caps.data?.providers ?? []).map((p) => (
@@ -87,7 +87,7 @@ function SettingsPage() {
         <h2 className="text-lg font-semibold">Developer connectors / MCP</h2>
         <p className="mt-1 text-sm text-muted-foreground">
           The Lovable MCP endpoint connects ChatGPT, Claude or Claude Code to Lovable for <b>building and editing this project</b>.
-          It is <b>not</b> an AI endpoint for analyzing FeedIntel videos.
+          It is <b>not</b> an AI endpoint for analyzing Signal Spy videos.
         </p>
         <div className="mt-4 flex flex-wrap items-center gap-2">
           <code className="rounded-md bg-muted px-3 py-2 text-sm tabular">{MCP_URL}</code>

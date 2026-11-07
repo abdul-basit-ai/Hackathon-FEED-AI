@@ -7,7 +7,7 @@ import { ErrorState, LoadingState } from "@/components/fi/States";
 import { feedintelApi } from "@/services/feedintelApi";
 
 export const Route = createFileRoute("/reports/$analysisId")({
-  head: () => ({ meta: [ { title: "Report — FeedIntel" }, { name: "description", content: "Evidence-backed social video intelligence report with sources and limitations." }, { property: "og:title", content: "Report — FeedIntel" }, { property: "og:description", content: "Evidence-backed social video intelligence report with sources and limitations." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" } ] }),
+  head: () => ({ meta: [ { title: "Report — Signal Spy" }, { name: "description", content: "Evidence-backed social video intelligence report with sources and limitations." }, { property: "og:title", content: "Report — Signal Spy" }, { property: "og:description", content: "Evidence-backed social video intelligence report with sources and limitations." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" } ] }),
   component: ReportPage,
 });
 
