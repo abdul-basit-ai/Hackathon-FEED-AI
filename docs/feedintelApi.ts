@@ -62,7 +62,7 @@ export interface Analysis {
   };
   insights: { id: string; title: string; explanation: string; evidence_video_ids: string[] }[];
   videos: Video[];
-  report: { title: string; executive_summary: string; recommendations: string[]; intelligence: { provider: IntelligenceProvider | 'demo' } };
+  report: { title: string; executive_summary: string; recommendations: string[]; intelligence: { provider: IntelligenceProvider | 'demo' }; context?: AnalyzeRequest };
   limitations: string[];
   generated_at: string;
 }

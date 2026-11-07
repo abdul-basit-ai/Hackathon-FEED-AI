@@ -1,8 +1,17 @@
-# FeedIntel backend
+# FeedIntel
 
-Backend implementation of Plan B for the initial MVP: Competitor Spy, Trend Detector, calculated KPIs, AI interpretation, video evidence, structured reports, and saved history. The frontend and PDF rendering belong to the separate Lovable project.
+MVP for Competitor Spy, Trend Detector, calculated KPIs, AI interpretation, video evidence, structured reports, and saved history.
 
-There are no runtime npm dependencies. Node.js 22.16+ is required. Shared standard-Web-API JavaScript also runs in the Supabase Edge Function.
+- **Backend** (this folder): Node/Supabase Edge Function. Documented below.
+- **Frontend** (`frontend/`): the Lovable-built TanStack Start UI, integrated with this backend, including sign-in, reports, print/PDF, and history. See [frontend/README.md](frontend/README.md) for configuration and deployment (root directory `frontend`).
+
+```sh
+npm run dev:ui     # UI at http://127.0.0.1:5173
+npm run test:ui    # frontend tests
+npm run build:ui   # frontend production build
+```
+
+The backend has no runtime npm dependencies. Node.js 22.16+ is required. Shared standard-Web-API JavaScript also runs in the Supabase Edge Function.
 
 Intelligence is selectable: use an existing OpenAI API project, Claude API access, or your Lovable project's managed AI connector. See [Lovable intelligence setup and ready-to-paste prompt](docs/lovable-intelligence.md). `POST /analyze` accepts optional `intelligence_provider: "openai" | "claude" | "lovable"`; `GET /intelligence-options` exposes configuration availability to the authenticated frontend. Omitting the field uses `INTELLIGENCE_PROVIDER` (default `openai`). Lovable-managed AI requires deploying a bridge in your existing Lovable project; that remote setup is not done by the local code.
 
@@ -85,7 +94,7 @@ supabase functions deploy feedintel
 
 `login` authenticates your CLI, `link` chooses the project, `db push` applies the migration, and `functions deploy` uploads the shared code and Edge entry point. Use the dashboard to enter secrets privately; Supabase supplies its project URL automatically. Do not run `db push` again if you applied the SQL manually without reconciling migration history.
 
-The Edge function's gateway JWT check is disabled in `config.toml` because the application itself verifies the bearer session with Supabase Auth and checks `DEMO_USER_IDS`. This does **not** make analysis or history public. Only `/health` and allowed-origin preflight requests are unauthenticated. No automatic user creation or login UI is included.
+The Edge function's gateway JWT check is disabled in `config.toml` because the application itself verifies the bearer session with Supabase Auth and checks `DEMO_USER_IDS`. This does **not** make analysis or history public. Only `/health` and allowed-origin preflight requests are unauthenticated. No automatic user creation is included. The frontend provides password sign-in for approved accounts but no signup.
 
 The three core tables have RLS enabled with no browser access policies. Owner filtering happens in service-only RPCs. Quota state also lives in the database, so the limit of five analyses per user per minute works across Edge instances. All attempts that reach the pipeline consume quota, including failed provider calls. Local demo mode has an equivalent memory quota. Each instance processes at most two analyses simultaneously. Configure additional account-level provider spend caps as appropriate; these MVP limits are not a billing system.
 
@@ -137,7 +146,7 @@ Errors use `{ "error": { "code": "...", "message": "...", "request_id": "..." } 
 
 ## Connect Lovable
 
-Copy `docs/feedintelApi.ts` into your frontend's services folder and create the service using your existing Supabase client:
+The bundled `frontend/` already implements this integration in `frontend/src/services/`. For another client, copy `docs/feedintelApi.ts` into its services folder and create the service using your existing Supabase client:
 
 ```ts
 const api = createFeedIntelApi(
@@ -155,7 +164,9 @@ Only your project URL and publishable Supabase client key belong in frontend con
 
 Real acceptance still requires configured accounts and credentials: a successful Oriane search, computed KPI, actual OpenAI insight, verified original video URL, saved Supabase result, and retrieval by ID. The migration must also be exercised against your Supabase project and the Edge Function deployed/tested. No remote project, secrets, or deployment are provisioned by the local tests.
 
-Live setup check on 2026-11-07: Oriane authentication, real retrieval, normalization, and KPI calculation passed. Supabase accepted the configured server key, but its Data API reported the analyses table missing (`PGRST205`). OpenAI returned HTTP 429 with `credit_balance_exhausted`; add project credits/check billing limits before retrying. The backend reports credit/quota exhaustion as `503 OPENAI_CREDITS_EXHAUSTED`. The approved demo user's UUID is also still required in `DEMO_USER_IDS`. No live AI result or database persistence has been verified.
+Live status on 2026-11-07: the Edge Function is deployed in live mode and `/health` responds. Oriane authentication, real retrieval, normalization, and KPI calculation passed. The migration was applied and its tables and history RPC are reachable. The approved demo user is configured in `DEMO_USER_IDS`. OpenAI returned HTTP 429 with `credit_balance_exhausted`; add project credits/check billing limits before retrying. The backend reports this as `503 OPENAI_CREDITS_EXHAUSTED`. Direct Claude and the Lovable AI bridge are not yet live-verified. No complete real AI analysis → saved result → browser report journey has passed yet.
+
+Frontend verification uses mocked network responses served by the real backend handler in demo mode: sign-in, both skills, report and print/PDF, history reopening, mobile layout, and sign-out. No real credentials or paid calls are involved.
 
 Documentation consulted:
 

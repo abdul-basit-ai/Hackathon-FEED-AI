@@ -123,7 +123,7 @@ export function createApp({ env, connector, analyzer, store, authenticate, fetch
           analysis_id: crypto.randomUUID(), skill: input.skill, status: 'completed', kpis, charts,
           insights: interpretation.insights, videos,
           report: { title: input.skill === 'competitor_spy' ? 'Competitive Intelligence Report' : 'Topic Patterns Report', executive_summary: interpretation.executive_summary, recommendations: interpretation.recommendations,
-            intelligence: { provider: demo ? 'demo' : provider } },
+            intelligence: { provider: demo ? 'demo' : provider }, context: input },
           limitations, generated_at: generatedAt.toISOString(),
         };
         await store.save(owner, input, result);

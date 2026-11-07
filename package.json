@@ -10,7 +10,10 @@
     "dev": "node --watch server.js",
     "setup:demo": "node scripts/setup-demo.mjs",
     "smoke": "node scripts/smoke.mjs",
-    "check:live": "node scripts/check-live.mjs"
+    "check:live": "node scripts/check-live.mjs",
+    "dev:ui": "npm --prefix frontend run dev -- --host 127.0.0.1 --port 5173",
+    "build:ui": "npm --prefix frontend run build",
+    "test:ui": "npm --prefix frontend test"
   },
   "repository": {
     "type": "git",
